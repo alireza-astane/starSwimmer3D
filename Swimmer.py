@@ -6,7 +6,11 @@ from numba import njit
 import scipy
 from scipy.spatial.transform import Rotation as Rot
 from itertools import permutations
+<<<<<<< HEAD
 
+=======
+from numba.experimental import jitclass
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
 
 
 
@@ -20,6 +24,7 @@ nsteps = 1000
 dt = T/steps
 
 
+<<<<<<< HEAD
 
 
 etas = np.array([[1.,0.,0.],[0.,1.,0.],[0.,0.,1.]])
@@ -34,6 +39,8 @@ def mul(a,b):
             ans[i,j] = a @ b[i,j]
     return ans
 
+=======
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
 def visualize(r,angles=(0,0)):
     ax = plt.figure().add_subplot(projection='3d')
     colors = ('r', 'g', 'b', 'k','y')
@@ -43,7 +50,11 @@ def visualize(r,angles=(0,0)):
         ax.plot(xs = [r[j,0] , r[0,0]] , ys = [r[j,1] , r[0,1]] , zs = [r[j,2] , r[0,2]],c="b")
     
     ax.view_init(angles[0],angles[1])
+<<<<<<< HEAD
     return ax
+=======
+    plt.show()
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
 
 
 def getAngle(a,b):
@@ -114,8 +125,12 @@ def getO(d):
 
     for i in range(5):  #for i=j
         O[i,i,:,:] = np.eye(3)
+<<<<<<< HEAD
         
     return mul(etas,O)
+=======
+    return O
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
 
 @njit
 def getRR(r):
@@ -317,7 +332,10 @@ def getCircleSteps(a,epsilon,rotorStep):
     ax = plt.figure().add_subplot(projection='3d')
 
     ax.scatter(xs = poses[:,0],ys = poses[:,1], zs=poses[:,2])
+<<<<<<< HEAD
     plt.savefig("2_2.png")
+=======
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
     plt.show()
         
         
@@ -352,14 +370,22 @@ def getCircleSteps(a,epsilon,rotorStep):
     # plt.show()
 
     meanPoing = np.mean(image,axis=0)
+<<<<<<< HEAD
 
 
     return *deltaSpringPerStep,circlingSteps,np.mean(np.linalg.norm(image - meanPoing,axis=1)),ax
+=======
+    return *deltaSpringPerStep,circlingSteps,np.mean(np.linalg.norm(image - meanPoing,axis=1))
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
 
 
 
 
+<<<<<<< HEAD
 def getCircleSteps2(a,epsilon,rotorStep):
+=======
+def getCircleSteps(a,epsilon,rotorStep):
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
     # epsilon = 3
     closing  = a - np.arange(steps+1)*epsilon/steps
     opening = a - epsilon + np.arange(steps+1)*epsilon/steps
@@ -1384,5 +1410,9 @@ def actSequence(ns,a,epsilon,rotorStep):
         
     deltaSpringPerStep1 = (poses[-1]-poses[0])/rotorStep
     
+<<<<<<< HEAD
     return deltaSpringPerStep1,totalDelta,totalRotation
+=======
+    return deltaSpringPerStep1
+>>>>>>> 9ee40799ea3aba5d4e0533d3d6e61e4abba19029
     
