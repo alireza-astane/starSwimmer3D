@@ -211,6 +211,9 @@ Data/*
 pov/*
 
 
+data/
+/data
+
 
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,jupyternotebooks
