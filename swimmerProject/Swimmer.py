@@ -1,3 +1,5 @@
+# /home/astane/Backup/results/swimmerProject/
+
 import numba
 import numpy as np
 import scipy as sp
@@ -491,6 +493,9 @@ def getCircleSteps(a, epsilon, rotorStep):
         poses[i, :] = rotorR
 
     ax = plt.figure().add_subplot(projection="3d")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
 
     ax.scatter(xs=poses[:, 0], ys=poses[:, 1], zs=poses[:, 2])
     plt.savefig("2_2.png")
