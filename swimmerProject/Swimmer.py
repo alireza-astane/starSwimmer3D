@@ -1,4 +1,3 @@
-# /home/astane/Backup/results/swimmerProject/
 import numba
 import numpy as np
 import scipy as sp
@@ -385,9 +384,6 @@ def getC(l, u):
     return np.array([*list(lu), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 
-#  u -> u/steps maybe
-
-
 def getV(r, l, u):
     d = getDistanceMatrix(r)
 
@@ -502,9 +498,6 @@ def getCircleSteps(a, epsilon, rotorStep):
 
     deltaSpringPerStep = (poses[-1] - poses[0]) / rotorStep
 
-    # plt.scatter(poses[:,0],poses[:,1])
-    # plt.show()
-
     ys = poses[:, 1]
     maxes = np.logical_and((ys >= np.roll(ys, 1)), (ys >= np.roll(ys, -1)))
     a1 = list(maxes).index(True, 1)
@@ -520,17 +513,9 @@ def getCircleSteps(a, epsilon, rotorStep):
         rotorRotation = np.matmul(totalRotation, rotorRotation)
         OneCirclePoses[i, :] = rotorR
 
-    # plt.scatter(poses[:,0],poses[:,1])
-    # plt.show()
-
     image = OneCirclePoses - (
         (OneCirclePoses[-1] - OneCirclePoses[0]) / circlingSteps
     ) * np.arange(circlingSteps).reshape((circlingSteps, 1))
-
-    # ax = plt.figure().add_subplot(projection='3d')
-    # ax.scatter(xs = image[:,0],ys = image[:,1], zs=image[:,2])
-    # ax.scatter(np.mean(image,axis=0)[0],np.mean(image,axis=0)[0],np.mean(image,axis=0)[0])
-    # plt.show()
 
     meanPoing = np.mean(image, axis=0)
 
@@ -601,9 +586,6 @@ def getCircleSteps2(a, epsilon, rotorStep):
 
     deltaSpringPerStep = (poses[-1] - poses[0]) / rotorStep
 
-    # plt.scatter(poses[:,0],poses[:,1])
-    # plt.show()
-
     ys = poses[:, 1]
     maxes = np.logical_and((ys >= np.roll(ys, 1)), (ys >= np.roll(ys, -1)))
     a1 = list(maxes).index(True, 1)
@@ -619,17 +601,9 @@ def getCircleSteps2(a, epsilon, rotorStep):
         rotorRotation = np.matmul(totalRotation, rotorRotation)
         OneCirclePoses[i, :] = rotorR
 
-    # plt.scatter(poses[:,0],poses[:,1])
-    # plt.show()
-
     image = OneCirclePoses - (
         (OneCirclePoses[-1] - OneCirclePoses[0]) / circlingSteps
     ) * np.arange(circlingSteps).reshape((circlingSteps, 1))
-
-    # ax = plt.figure().add_subplot(projection='3d')
-    # ax.scatter(xs = image[:,0],ys = image[:,1], zs=image[:,2])
-    # ax.scatter(np.mean(image,axis=0)[0],np.mean(image,axis=0)[0],np.mean(image,axis=0)[0])
-    # plt.show()
 
     meanPoing = np.mean(image, axis=0)
     return (
@@ -1206,178 +1180,26 @@ def getStartingEffect(a, epsilon, rotorStep):
     )
 
 
-# @njit
-# def getAction(state,ratio):
-#     #t=1 if state=0 and t = ratio if state = 1   ???
-#     t1,t2,t3,t4 = np.where(state==0,1,ratio)
-#     sum = t1*t2*t3 + t1*t2*t4 + t1*t3*t4 + t2*t3*t4
-#     #probs = np.array([t2*t3*t4/sum,t1*t3*t4/sum,t1*t2*t4/sum,t2*t3*t1/sum])
-#     randomNumber = np.random.uniform(0,1,1)
-#     if randomNumber <= t4*t2*t3/sum:
-#         changingJoint = 0
-#     elif(randomNumber <= (t4*t3*t1+t4*t2*t3)/sum):
-#         changingJoint = 1
-#     elif randomNumber <= (t4*t2*t1+t4*t2*t3+t4*t3*t1)/sum:
-#         changingJoint = 2
-#     else:
-#         changingJoint = 3
-#     return changingJoint,getDeltat2(t1,t2,t3,t4)
-
-
-# @njit
-# def doStep(Data,state,ratio):
-#     action,deltat = getAction(state,ratio)
-#     new_state = state.copy()
-#     new_state[action] = 1 - new_state[action]
-#     delta = Data[fromBinary(state)*4 + action][0,:]  #???
-#     rotation = Data[fromBinary(state)*4 + action][1:,:]
-#     return new_state,delta,rotation,deltat
-
-
-# @njit
-# def getDeltat(t1,t2,t3,t4,tc):
-#     tav = 18.844
-#     return ((1-1/(tav*t1))*(1-1/(tav*t2))*(1-1/(tav*t3))*(1-1/(tav*t4))*tav/tc)/(((1/t1 + 1/t2 + 1/t3 + 1/t4)**2)*(1-1/(tav*tc)))
-
-# @njit
-# def getDeltat2(t1,t2,t3,t4):
-#     return 1/(1/t1 + 1/t2 + 1/t3 + 1/t4)
-
-
-# @njit
-# def getBinary(a):
-#     return np.array([a//8,(a%8)//4,(a%4)//2,a%2])
-# @njit
-# def fromBinary(binary):
-#     x = 0
-#     for i in range(len(binary)):
-#         x += binary[::-1][i]*(2**i)
-#     return x
-
-# @njit
-# def fromBinary2d(binaries):
-#     x = np.zeros(binaries.shape[0],dtype=np.int64)
-#     for i in range(binaries.shape[0]):
-#         x[i] = fromBinary(binaries[i])
-#     return x
-
-
-# def getAllPossibleActions(a,epsilon,steps):
-
-#     closing = a - np.arange(steps+1)*epsilon/steps
-#     closed = (a-epsilon)*np.ones(steps+1)
-#     opening = a - epsilon + np.arange(steps+1)*epsilon/steps
-#     opened  = a *np.ones(steps+1)
-
-#     possibleActions = np.zeros((64,4,steps+1))
-
-
-#     for i in range(16):
-#         for j in range(4):
-#             actionBinaryState = getBinary(i)
-#             # closed for 0 and opened for 1
-#             ca = np.array([closed,closed,closed,closed])*actionBinaryState.reshape(4,1) + np.array([opened,opened,opened,opened])*(1-actionBinaryState).reshape(4,1)
-#             if actionBinaryState[j] == 0:
-#                 ca[j,:] = opening
-#             else:
-#                 ca[j,:] = closing
-
-#             possibleActions[4*i+j] = ca
-
-#     return possibleActions
-
-
-# @njit
-# def mul(a,b):
-#     return a @ b
-
-
-# @njit
-# def mul2(a,v):
-#     ans = np.zeros(3,dtype=np.float64)
-#     for i in range(3):
-#         ans[i] = a[i,0]*v[0] + a[i,1]*v[1] +a[i,2]*v[2]
-#     return ans
-
-
-# @njit
-# def perturbe(Data,perturbingSteps,ratio):
-#     time = 0
-#     pertrubingPose = np.array([0.,0.,0.])
-#     perturbingRotation = np.eye(3)
-#     state = np.ones(4,dtype=np.int64)
-#     pertrubingPoses = np.zeros((perturbingSteps,3))
-#     pertrubingTimes = np.zeros(perturbingSteps)
-
-#     for t in range(perturbingSteps):
-#         newState,delta,rotation,deltat = doStep(Data,state,ratio)
-#         state = newState
-#         pertrubingPose += perturbingRotation @ delta
-#         perturbingRotation = rotation @ perturbingRotation
-#         pertrubingPoses[t] = pertrubingPose
-#         time += deltat
-#         pertrubingTimes[t] = time
-
-#     return pertrubingPoses,pertrubingTimes
-
-
-# @njit
-# def getPerturbingDiffusionCoefForRatio(Data,ratio,iterations=10_000,perturbingSteps=10_000):
-#     iterations = 10_000
-#     perturbingSteps = 10_000
-#     meanFinalPoses = np.zeros((perturbingSteps))
-#     meanFinalTimes = np.zeros(perturbingSteps)
-#     for iteration in range(iterations):
-#         pertrubingPoses,pertrubingTimes = perturbe(Data,perturbingSteps,ratio)
-#         #print(np.sum(np.square(pertrubingPoses[:]),axis=1).shape,meanFinalPoses.shape)
-#         meanFinalPoses +=   np.sum(np.square(pertrubingPoses[:]),axis=1)
-#         meanFinalTimes += pertrubingTimes
-#         #print(iteration)
-
-#     return meanFinalTimes/iterations,meanFinalPoses/iterations
-
-# def getPerturbingDiffusionCoef(Data,ratios):
-#     diffs =np.zeros(ratios.shape)
-#     for i in range(ratios.shape[0]):
-#         print(i)
-#         meanFinalTimes,meanFinalPoses= getPerturbingDiffusionCoefForRatio(Data,ratios[i])
-#         slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(meanFinalPoses,meanFinalTimes)
-#         diffs[i] =  slope
-#     return diffs
-
-
 @njit
 def getOrientedAction(state, ratio, rotation, grad):
-    # TODO *ratio
-    # t=1 if state=0 and t = ratio if state = 1
-    # print(np.dot(rotation,r0.T).T,cGrad)
-    # print(np.dot(np.dot(rotation,r0.T).T,cGrad))
 
     grad = np.array([0.0, 0.0, grad])
     ratios = ratio + np.dot(np.dot(rotation, r0[1:].T).T, grad)
 
     t1, t2, t3, t4 = np.where(state == 0, np.ones(4), ratios)
-    # print(t1,t2,t3,t4)
 
     sum = t1 * t2 * t3 + t1 * t2 * t4 + t1 * t3 * t4 + t2 * t3 * t4
-    # probs = np.array([t2*t3*t4/sum,t1*t3*t4/sum,t1*t2*t4/sum,t2*t3*t1/sum])
     randomNumber = np.random.uniform(0, 1, 1)
     if randomNumber <= t4 * t2 * t3 / sum:
         changingJoint = 0
-    #   deltat = getDeltat(t1,t2,t3,t4,t1)
     elif randomNumber <= (t4 * t2 * t1 + t4 * t2 * t3) / sum:
         changingJoint = 1
-    #        deltat = getDeltat(t1,t2,t3,t4,t2)
     elif randomNumber <= (t4 * t2 * t1 + t4 * t2 * t3 + t4 * t2 * t1) / sum:
         changingJoint = 2
-        # deltat = getDeltat(t1,t2,t3,t4,t3)
+
     else:
         changingJoint = 3
-        # deltat = getDeltat(t1,t2,t3,t4,t4)
 
-    # changingJoint = np.random.choice(np.arange(4),p=probs)
-    # action = np.concatenate((state,changingJoint.reshape((1,))),axis=0)
-    # deltat = 1 if state[changingJoint]==0 else ratio
     return changingJoint, getDeltat2(t1, t2, t3, t4)
 
 
@@ -1424,15 +1246,9 @@ def getOrientedPerturbingDiffusionCoefForRatio(Data, ratio, grad):
         pertrubingPoses, pertrubingTimes = Orientedperturbe(
             Data, perturbingSteps, ratio, grad
         )
-        # print(np.sum(np.square(pertrubingPoses[:]),axis=1).shape,meanFinalPoses.shape)
         meanFinalPoses += pertrubingPoses[:, 2]
         meanFinalTimes += pertrubingTimes
-        # print(iteration)
 
-    # plt.plot(meanFinalTimes,meanFinalPoses)
-    # plt.show()
-
-    # return slope  #*some Coef
     return meanFinalTimes / iterations, -meanFinalPoses / iterations
 
 
@@ -1530,11 +1346,6 @@ def actSequence(ns, a, epsilon, rotorStep):
     rf8, delta, Rotation = act(allStart)
     totalDelta += np.matmul(totalRotation, delta)
     totalRotation = np.matmul(Rotation, totalRotation)
-
-    # _,vs = np.linalg.eig(totalRotation)
-    # for i in range(3):
-    #     if np.sum(np.square(np.imag(vs[i])))==0:
-    #         return vs[i].real
 
     rotorR = np.array([0.0, 0.0, 0.0])
     rotorRotation = np.eye(3)
